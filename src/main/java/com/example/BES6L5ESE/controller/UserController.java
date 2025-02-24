@@ -23,13 +23,5 @@ public class UserController {
     public String generaUser(@RequestBody User user){
     userService.saveUser(user);
     return "Utente creato con successo";
-}
-@GetMapping("/all")
-    public List<User> prendiTuttiUser(@RequestParam String ruolo){
-    if (!ruolo.equals("RUOLO_ADMIN")){
-        return null;
-    }
-    return "Metodo";
-}
-
+   }
 }
