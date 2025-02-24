@@ -14,5 +14,6 @@ public class EventoDTO {
     private Boolean disponibilita;
     @NotBlank(message = "IL campo location è obbligatorio")
     private  String location;
+    private Long eventoManagerId;
 
 }
