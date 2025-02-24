@@ -6,10 +6,9 @@ import com.example.BES6L5ESE.service.EventoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/evento")
@@ -22,5 +21,11 @@ public class EventoController {
     public Evento createEvento(@RequestBody @Validated EventoDTO eventoDTO){
         return eventoService.createEvent(eventoDTO);
     }
+
+    @GetMapping
+    public List<Evento> getAllEvent(){
+        return eventoService.getAllEvents();
+    }
+
 
 }

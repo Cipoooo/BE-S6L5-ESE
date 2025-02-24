@@ -9,23 +9,26 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
 public class EventoService {
 
-    @Autowired EventoRepository eventoRepository;
-    @Autowired UserRepository userRepository;
+    @Autowired
+    EventoRepository eventoRepository;
+    @Autowired
+    UserRepository userRepository;
 
-    public String saveE(EventoDTO eventoDTO){
-        User user = userRepository.findById(eventoDTO.getEventoManagerId()).orElseThrow(()->new RuntimeException("No MAnager found"));
+    public String saveE(EventoDTO eventoDTO) {
+        User user = userRepository.findById(eventoDTO.getEventoManagerId()).orElseThrow(() -> new RuntimeException("No MAnager found"));
         Evento eventoSave = toEntity(eventoDTO);
         eventoRepository.save(eventoSave);
         return "Operazione completata con successo";
     }
 
-    public Evento toEntity(EventoDTO eventoDTO){
+    public Evento toEntity(EventoDTO eventoDTO) {
         Evento evento = new Evento();
         evento.setDescrizioneEvento(eventoDTO.getDescrizioneEvento());
         evento.setTitoloEvento(eventoDTO.getTitoloEvento());
@@ -34,7 +37,7 @@ public class EventoService {
         return evento;
     }
 
-    public EventoDTO toDTO(Evento evento){
+    public EventoDTO toDTO(Evento evento) {
         EventoDTO eventoDTO = new EventoDTO();
         eventoDTO.setDescrizioneEvento(evento.getDescrizioneEvento());
         eventoDTO.setTitoloEvento(evento.getTitoloEvento());
@@ -42,12 +45,18 @@ public class EventoService {
         return eventoDTO;
     }
 
-    public Evento createEvent(EventoDTO eventoDTO){
+    public Evento createEvent(EventoDTO eventoDTO) {
         Optional<User> organizzatore = userRepository.findById(eventoDTO.getEventoManagerId());
-        if(organizzatore.isEmpty()){
+        if (organizzatore.isEmpty()) {
             throw new RuntimeException("Organizzatore non trovato");
         }
         Evento evento = toEntity(eventoDTO);
-        return  eventoRepository.save(evento);
+        return eventoRepository.save(evento);
     }
+
+    public List<Evento> getAllEvents() {
+        return eventoRepository.findAll();
+    }
+
 }
+
