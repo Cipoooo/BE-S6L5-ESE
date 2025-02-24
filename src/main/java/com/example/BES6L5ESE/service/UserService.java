@@ -5,6 +5,7 @@ import com.example.BES6L5ESE.entityDTO.UserDTO;
 import com.example.BES6L5ESE.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 public class UserService {
 
     @Autowired UserRepository userRepository;
+    @Autowired PasswordEncoder passwordEncoder;
 
     public User toEntity(UserDTO userDTO){
         User user = new User();
