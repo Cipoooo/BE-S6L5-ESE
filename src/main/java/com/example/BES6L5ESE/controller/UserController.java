@@ -25,7 +25,7 @@ public class UserController {
     @Autowired PrenotazioneService prenotazioneService;
     @Autowired private AuthService authService;
 
-    @PostMapping("/utente")
+    @PostMapping("/new")
     public String generaUser(@RequestBody User user){
     userService.saveUser(user);
     return "Utente creato con successo";

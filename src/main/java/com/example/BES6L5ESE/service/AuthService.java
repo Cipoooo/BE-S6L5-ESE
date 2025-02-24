@@ -3,13 +3,18 @@ package com.example.BES6L5ESE.service;
 import com.example.BES6L5ESE.entityDTO.request.SignUp;
 import com.example.BES6L5ESE.security.jwt.jwtUtils;
 import jakarta.transaction.Transactional;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -24,26 +29,41 @@ public class AuthService {
     }
 
     public ResponseEntity<?> authenticateUser(SignUp signUp) {
-        System.out.println("AUTHENTICATING USER : " + signUp.getUsername());
-        Authentication authentication;
         try {
-            authentication = authenticationManager.authenticate(
+            Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            signUp.getUsername(), signUp.getPassword()));
+                            signUp.getUsername(),
+                            signUp.getPassword()
+                    )
+            );
 
-        } catch (RuntimeException e) {
-            System.out.println("AUTHENTICATION FAILED : " + signUp.getUsername());
-            throw new RuntimeException(e);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            Object principal = authentication.getPrincipal();
+            String username;
+
+            if (principal instanceof org.springframework.security.core.userdetails.User) {
+                username = ((org.springframework.security.core.userdetails.User) principal).getUsername();
+            } else {
+                username = principal.toString();
+            }
+
+
+
+            username = ((UserDetails) authentication.getPrincipal()).getUsername();
+            if (username == null || username.isEmpty()) {
+                throw new RuntimeException("username is not valid!");
+            }
+            List<String> roles = authentication.getAuthorities()
+                    .stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+            String jwt = jwtUtils.generateToken(username, String.valueOf(roles));
+
+            return ResponseEntity.ok(jwt);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("The username or password is incorrect.!");
         }
-        System.out.println("USER AUTHENTICATION SUCCESSFULLY : " + signUp.getUsername());
-
-        // prende l'oggetto autenticato e lo rendiamo sicuro.  ⬇️
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-        String ruolo = authentication.getAuthorities().toString();
-        String jwt = jwtUtils.generateToken(username, ruolo);
-        System.out.println("JWT GENERATE : " + username);
-        return ResponseEntity.ok(jwt);
     }
 }
 
