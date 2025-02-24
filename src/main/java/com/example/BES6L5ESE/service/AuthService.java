@@ -23,14 +23,27 @@ public class AuthService {
         this.jwtUtils = jwtUtils;
     }
 
-    public ResponseEntity<?> authenticateUser(SignUp signUp){
-        Authentication authentication = authenticationManager.authenticate
-                (new UsernamePasswordAuthenticationToken(signUp.getUsername(),signUp.getPassword()));
+    public ResponseEntity<?> authenticateUser(SignUp signUp) {
+        System.out.println("AUTHENTICATING USER : " + signUp.getUsername());
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            signUp.getUsername(), signUp.getPassword()));
+
+        } catch (RuntimeException e) {
+            System.out.println("AUTHENTICATION FAILED : " + signUp.getUsername());
+            throw new RuntimeException(e);
+        }
+        System.out.println("USER AUTHENTICATION SUCCESSFULLY : " + signUp.getUsername());
+
         // prende l'oggetto autenticato e lo rendiamo sicuro.  ⬇️
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
         String ruolo = authentication.getAuthorities().toString();
-        String jwt = jwtUtils.generateToken(username,ruolo);
+        String jwt = jwtUtils.generateToken(username, ruolo);
+        System.out.println("JWT GENERATE : " + username);
         return ResponseEntity.ok(jwt);
     }
 }
+
