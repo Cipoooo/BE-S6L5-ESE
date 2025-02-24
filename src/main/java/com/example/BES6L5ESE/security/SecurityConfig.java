@@ -44,7 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/events").permitAll()
                         .requestMatchers("/events/{id}").permitAll()
                         .requestMatchers("/events/**").hasAuthority("ADMIN")
-                        .requestMatchers("/api/reservations/**").hasAuthority("USER")
+                        .requestMatchers("/api/prenotazione/**").hasAuthority("USER")
                         .requestMatchers("/utente/register", "/utente/login").permitAll()
 
                         .anyRequest().authenticated()
@@ -59,10 +59,6 @@ public class SecurityConfig {
         return new CustomUserDetailService(userRepository);
     }
 
-    //    @Bean
-//    public AuthenticationManager authenticationManager(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
-//        return http.getSharedObject(AuthenticationManager.class);
-//    }
     @Bean
     public AuthenticationManager authenticationManager(
             UserDetailsService userDetailsService) throws Exception {

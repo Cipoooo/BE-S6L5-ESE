@@ -3,12 +3,19 @@ package com.example.BES6L5ESE.service;
 import com.example.BES6L5ESE.entity.Evento;
 import com.example.BES6L5ESE.entity.Prenotazione;
 import com.example.BES6L5ESE.entity.User;
+import com.example.BES6L5ESE.entityDTO.EventoDTO;
+import com.example.BES6L5ESE.entityDTO.PrenotazioneDTO;
 import com.example.BES6L5ESE.repository.EventoRepository;
 import com.example.BES6L5ESE.repository.PrenotazioneRepository;
 import com.example.BES6L5ESE.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+import static java.lang.ProcessBuilder.Redirect.to;
 
 @Service
 @Transactional
@@ -29,5 +36,9 @@ public class PrenotazioneService {
         prenotazioneRepository.save(prenotazione);
         user.getPrenotazioneList().add(prenotazione);
         return "Tutto ok";
+    }
+
+    public List<Prenotazione> getAllPrenotazioni() {
+        return prenotazioneRepository.findAll();
     }
 }
