@@ -9,6 +9,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class EventoService {
@@ -40,4 +42,12 @@ public class EventoService {
         return eventoDTO;
     }
 
+    public Evento createEvent(EventoDTO eventoDTO){
+        Optional<User> organizzatore = userRepository.findById(eventoDTO.getEventoManagerId());
+        if(organizzatore.isEmpty()){
+            throw new RuntimeException("Organizzatore non trovato");
+        }
+        Evento evento = toEntity(eventoDTO);
+        return  eventoRepository.save(evento);
+    }
 }
